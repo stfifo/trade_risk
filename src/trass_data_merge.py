@@ -23,7 +23,7 @@ for file in file_list:
 
 merged_df = pd.concat(df_list, ignore_index=True)
 merged_df = merged_df[merged_df['기간'] != '총계']
-print(f"\n병합 완료... 총 데이터 행 개수: {len(merged_df)}")
+print(f"\ncomplete... total column: {len(merged_df)}")
 
-save_path = "../data/merged_trade_data.csv"
+save_path = "../data/total_trade.csv"
 merged_df.to_csv(save_path, index=False, encoding='utf-8-sig')
