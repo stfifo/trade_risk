@@ -21,11 +21,10 @@ try:
     news_df = pd.read_csv('../data/reuters.csv', encoding='utf-8-sig')
     news_df = news_df.dropna(subset=['main_text', 'date']).copy()
     
-    # 날짜 데이터를 문자열에서 datetime 객체로 변환 (RAG 검색 시 시계열 필터링 용이)
+    # datetime: str -> datetime
     news_df['date'] = pd.to_datetime(news_df['date'], errors='coerce')
     news_df = news_df.dropna(subset=['date']).copy()
 
-    # 키워드 필터링
     tech_kw = 'semiconductor|microchip|ai chip|tsmc|samsung|intel|asml|smic|foundry|wafer'
     trade_kw = 'supply chain|shortage|export control|sanction|tariff|trade war|embargo'
     geo_kw = 'geopolitic|taiwan strait|sino-us|us-china|hegemony'
@@ -35,9 +34,8 @@ try:
 
     def clean_text(text):
         text = str(text)
-        # Breakingviews 이후의 모든 내용 제거
         text = re.split(r'Breakingviews\s*Reuters Breakingviews', text)[0]
-        # (The author is a Reuters... 형태의 문장 제거
+        #remove: The author is a Reuters...
         text = re.split(r'\(The author is a Reuters.*?columnist.*?\)', text)[0]
         return text.strip()
         
@@ -53,7 +51,6 @@ except FileNotFoundError:
 
 print("\n===ACLED 지정학적 분쟁 데이터 전처리===")
 try:
-    # 1. 데이터 불러오기
     acled_df = pd.read_csv('../data/ACLED_data.csv', encoding='utf-8-sig')
     
     essential_cols = ['event_date', 'disorder_type', 'event_type', 'location', 'notes', 'fatalities']
