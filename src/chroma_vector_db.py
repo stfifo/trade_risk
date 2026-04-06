@@ -6,12 +6,10 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
 
-# .env 파일에서 API 키 로드 (os.environ 코드 제거됨)
 load_dotenv()
 
-print("=== 2. 로이터 뉴스 Vector DB(ChromaDB) 구축 ===")
+print("=== reuter news Vector DB(ChromaDB)===")
 
-# 1. 정제된 로이터 뉴스 로드
 news_df = pd.read_csv('../data/clean_reuters.csv', encoding='utf-8-sig')
 news_df['date'] = pd.to_datetime(news_df['date'], errors='coerce')
 news_df = news_df.dropna(subset=['date', 'main_text']).copy()
@@ -37,9 +35,9 @@ for _, row in news_df.iterrows():
         )
         documents.append(doc)
 
-print(f"총 {len(documents)}개의 문서 청크가 준비되었습니다. 임베딩 및 DB 저장을 시작합니다...")
+# print(f"total {len(documents)} doc chunk. start enbedding and store vectorDB...")
 
-# 3. 임베딩 및 ChromaDB 저장
+# embedding & vectorDB
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 vectorstore = Chroma.from_documents(
     documents=documents,
@@ -47,4 +45,4 @@ vectorstore = Chroma.from_documents(
     persist_directory="../data/chroma_db"
 )
 
-print("ChromaDB 구축 완료! 데이터가 성공적으로 저장되었습니다.")
+# print("ChromaDB complete")
