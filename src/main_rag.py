@@ -60,11 +60,19 @@ def run_rag_pipeline():
         
         try:
             response = llm.invoke(final_prompt)
-            print("="*60)
-            print(f"[공급망 리스크 리포트 - {q['country']} / {q['trade_period']}]")
-            print("="*60)
-            print(response.content)
-            print("="*60)
+            
+            #target : 22-10 미중 수출규제 여파
+            #random: 국가/시기 무관 랜덤 샘플링
+            prefix = "Target_ExportControl" if q in target_queries else "Random"
+            filename = f"RiskReport_{prefix}_{country_name}_{period}.md"
+            filepath = os.path.join(report_dir, filename)
+            
+            with open(filepath, "w", encoding="utf-8") as f:
+                f.write(f"# 📄 공급망 리스크 리포트 - {country_name} / {period}\n\n")
+                f.write(response.content)
+                
+            print(f"  -> 저장 완료: {filepath}")
+            
         except Exception as e:
             print(f"API error while generating report: {e}")
 
