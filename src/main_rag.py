@@ -48,7 +48,6 @@ def run_rag_pipeline():
     
     llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
 
-    # =============== [프롬프트 고도화 반영] ===============
     prompt_template = """
     너는 대기업의 C-Level(최고경영진)에게 직보하는 최고 수준의 '글로벌 공급망 및 지정학 리스크 수석 분석가(Senior Supply Chain Risk Analyst)'야.
     너의 임무는 아래 제공된 관세청의 [수치 데이터 팩트]와 이와 연관된 [검색된 뉴스 문맥]을 종합하여, 경영진이 즉각적인 SCM(공급망 관리) 대응 전략을 세울 수 있도록 논리적이고 빈틈없는 심층 리포트를 작성하는 거야.

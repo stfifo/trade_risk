@@ -9,7 +9,7 @@ from langchain_core.prompts import PromptTemplate
 
 load_dotenv()
 
-print("=== 5.3 정량적 분석: Hyperparameter (Top-k) Study 시작 ===")
+print("===정량적 분석: Hyperparameter (Top-k) Study===")
 
 def run_hyperparameter_study():
     # case: 22년 10월, 미국 상무부 대중 수출규제
@@ -70,7 +70,7 @@ def run_hyperparameter_study():
     [출력 양식]
     반드시 아래 마크다운 양식을 엄격하게 지켜서 출력해.
 
-    # 📄 공급망 리스크 심층 분석 리포트
+    # 공급망 리스크 심층 분석 리포트
 
     ## 1. 수치 하락의 지정학적 원인
     (분석 내용 작성)
@@ -152,7 +152,7 @@ def run_hyperparameter_study():
         
         eval_response = evaluator_llm.invoke(eval_prompt.format(
             ground_truth=ground_truth, 
-            context_text=context_text, 
+            context=context_text, 
             report=generated_report))
         eval_text = eval_response.content
         
@@ -178,7 +178,7 @@ def run_hyperparameter_study():
     print("\n[실험 결과 요약]")
     print(df_results.to_string(index=False))
     
-    df_results.to_csv("../reports/hyperparameter_results.csv", index=False, encoding='utf-8-sig')
+    df_results.to_csv("../reports/hyperparameter_result.csv", index=False, encoding='utf-8-sig')
     print("\n실험 결과가 CSV로 저장")
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@ from langchain_core.prompts import PromptTemplate
 
 load_dotenv()
 
-print("=== 5. LLM-as-a-judge 채점관 가동 ===")
+print("===LLM-as-a-judge 채점관 가동 ===")
 
 def evaluate_report():
     evaluator_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.0)
@@ -26,7 +26,7 @@ def evaluate_report():
     {generated_report_text}
 
     ---
-    💡 [세부 평가 기준 (Rubric)]
+    [세부 평가 기준 (Rubric)]
     
     1. 원인 도출 정확성 (Accuracy - 10점)
        - 10점: [실제 팩트]에 명시된 핵심 지정학적 원인을 완벽하고 정확하게 짚어냄.
