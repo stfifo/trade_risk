@@ -47,8 +47,6 @@ try:
 except FileNotFoundError:
     print("Error: reuters data not found")
 
-    import pandas as pd
-
 print("\n===ACLED 지정학적 분쟁 데이터 전처리===")
 try:
     acled_df = pd.read_csv('../data/ACLED_data.csv', encoding='utf-8-sig')
