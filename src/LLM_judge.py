@@ -47,7 +47,7 @@ def evaluate_report():
        - 0점: 논리적 흐름이 붕괴되어 리포트로서의 가치가 없음.
 
     ---
-    📝 [출력 형식]
+    [출력 형식]
     충실한 사고의 사슬(Chain-of-Thought)을 유도하기 위해, 반드시 '평가 이유'를 먼저 상세히 작성한 후 점수를 매겨.
 
     - **1. 원인 도출 정확성**
@@ -68,7 +68,7 @@ def evaluate_report():
     """
     prompt = PromptTemplate.from_template(eval_prompt_template)
 
-    TARGET_REPORT_FILE = "~~~.md" 
+    TARGET_REPORT_FILE = "testcase_Target_china_2023-08.md" 
     
     GROUND_TRUTH = """
     2022년 10월 7일, 미국 상무부 산업안보국(BIS)이 중국의 첨단 반도체 생산 및 컴퓨팅 칩 확보를 제한하는 광범위한 수출 통제 조치를 발표함. 
@@ -81,7 +81,7 @@ def evaluate_report():
     - 기사 발행시기(2022-11): 제재의 여파가 가시화되면서 중국 반도체 팹들의 신규 라인 증설에 제동이 걸렸으며, 중국 해관총서 데이터에 따르면 단기적으로 중국의 반도체 제조 장비 수입액이 급감하는 추세를 보이고 있다.
     """
 
-    report_path = os.path.join("../reports", TARGET_REPORT_FILE)
+    report_path = os.path.join("../RAG_report", TARGET_REPORT_FILE)
     try:
         with open(report_path, 'r', encoding='utf-8') as f:
             generated_report = f.read()
@@ -106,7 +106,7 @@ def evaluate_report():
         print(result_text)
         print("="*60)
         
-        eval_filepath = os.path.join("../reports", f"EvalResult_{TARGET_REPORT_FILE.replace('.md', '.txt')}")
+        eval_filepath = os.path.join("../RAG_report", "llm_judge_testcase-china_08.md")
         with open(eval_filepath, "w", encoding="utf-8") as f:
             f.write(result_text)
             

@@ -17,7 +17,7 @@ def run_rag_pipeline():
         print("not query : no trigger")
         return
     
-    target_countries = ['미국', '중국', '한국', '대만']
+    target_countries = ['미국', '중국', '한국']
     
     # tatrget filtering ('2022-10' ~ '2023-10'/ target_countries)
     # 수출 규제 발표(22년 10월) 이후 1년간의 파급 효과
@@ -33,20 +33,20 @@ def run_rag_pipeline():
     # random sample(국가,시기 무관)
     remaining_queries = [q for q in queries if q not in target_queries]
     
-    random_sample_size = min(5, len(remaining_queries))
+    random_sample_size = min(3, len(remaining_queries))
     random_queries = random.sample(remaining_queries, random_sample_size)
     
     sampled_queries = target_queries + random_queries
     
     print(f"\n [보고서용 추출 완료] 타겟 케이스 {len(target_queries)}건 + 일반 랜덤 샘플 {len(random_queries)}건 (총 {len(sampled_queries)}건)")
 
-    report_dir = "../reports"
+    report_dir = "../RAG_report"
     os.makedirs(report_dir, exist_ok=True)
 
     embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
     vectorstore = Chroma(persist_directory="../data/chroma_db", embedding_function=embeddings)
     
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
+    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite", temperature=0.2)
 
     prompt_template = """
     너는 대기업의 C-Level(최고경영진)에게 직보하는 최고 수준의 '글로벌 공급망 및 지정학 리스크 수석 분석가(Senior Supply Chain Risk Analyst)'야.
@@ -126,12 +126,12 @@ def run_rag_pipeline():
             
             #target : 22-10 미중 수출규제 여파
             #random: 국가/시기 무관 랜덤 샘플링
-            prefix = "Target_ExportControl" if q in target_queries else "Random"
-            filename = f"RiskReport_{prefix}_{country_name}_{period}.md"
+            prefix = "Target" if q in target_queries else "Random"
+            filename = f"{prefix}_{country_name}_{period}.md"
             filepath = os.path.join(report_dir, filename)
             
             with open(filepath, "w", encoding="utf-8") as f:
-                f.write(f"# 📄 공급망 리스크 리포트 - {country_name} / {period}\n\n")
+                f.write(f"#공급망 리스크 리포트 - {country_name} / {period}\n\n")
                 f.write(response.content)
                 
             print(f"  -> 저장 완료: {filepath}")

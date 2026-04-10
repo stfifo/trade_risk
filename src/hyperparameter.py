@@ -1,9 +1,10 @@
 import os
 import re
 import pandas as pd
+import time
 from dotenv import load_dotenv
 from langchain_openai import OpenAIEmbeddings
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 
@@ -31,8 +32,8 @@ def run_hyperparameter_study():
     embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
     vectorstore = Chroma(persist_directory="../data/chroma_db", embedding_function=embeddings)
     
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.0)
-    evaluator_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.0)
+    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite", temperature=0.0)
+    evaluator_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite", temperature=0.0)
 
     gen_prompt = PromptTemplate.from_template("""
     너는 최고 수준의 '글로벌 공급망 및 지정학 리스크 수석 분석가(Senior Supply Chain Risk Analyst)'야.
@@ -133,7 +134,7 @@ def run_hyperparameter_study():
 
     """)
 
-    k_values = [1, 3, 4, 5, 7, 9, 11, 13, 15, 20]
+    k_values = [1, 3, 5, 7, 9]
     results = []
 
     print(f"테스트 케이스: {test_country} ({test_period})")
@@ -157,12 +158,12 @@ def run_hyperparameter_study():
         eval_text = eval_response.content
         
         try:
-            score1 = int(re.search(r"원인 도출 정확성:\s*\[?(\d+)\]?점", eval_text).group(1))
-            score2 = int(re.search(r"신뢰성 및 환각 통제:\s*\[?(\d+)\]?점", eval_text).group(1))
-            score3 = int(re.search(r"논리적 완결성:\s*\[?(\d+)\]?점", eval_text).group(1))
-            total = int(re.search(r"총점:\s*\[?(\d+)\]?점", eval_text).group(1))
+            score1 = int(re.search(r"1\..*?->\s*\[?(\d+)\]?", eval_text, re.DOTALL).group(1))
+            score2 = int(re.search(r"2\..*?->\s*\[?(\d+)\]?", eval_text, re.DOTALL).group(1))
+            score3 = int(re.search(r"3\..*?->\s*\[?(\d+)\]?", eval_text, re.DOTALL).group(1))
+            total = int(re.search(r"총점:\s*\[?(\d+)\]?", eval_text).group(1))
         except AttributeError:
-            print("ERROR: 점수 파싱 에러. 기본값 0 처리")
+            print("파싱 에러 발생. LLM의 실제 답변을 확인하기:\n", eval_text)
             score1, score2, score3, total = 0, 0, 0, 0
 
         results.append({
@@ -173,6 +174,9 @@ def run_hyperparameter_study():
             "총점 (30)": total
         })
         print(f"-> 총점: {total}/30")
+        
+        print("30s...for api rate limit protection")
+        time.sleep(60)
 
     df_results = pd.DataFrame(results)
     print("\n[실험 결과 요약]")
